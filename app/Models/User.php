@@ -47,4 +47,36 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
+
+    public function parentProfile() // 'parent' is reserved in PHP
+    {
+        return $this->hasOne(ParentProfile::class);
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+    // Helper to get profile dynamically
+    public function profile()
+    {
+        return match ($this->role) {
+            'student' => $this->student,
+            'teacher' => $this->teacher,
+            'parent' => $this->parentProfile,
+            'employee' => $this->employee,
+            default => null,
+        };
+    }
 }
