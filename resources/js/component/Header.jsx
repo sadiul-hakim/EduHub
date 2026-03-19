@@ -23,12 +23,12 @@ export default function Header({ toggleSidebar, serverProps }) {
                 <h5 className="mb-0">Dashboard</h5>
             </div>
             <div>
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle"></i> {serverProps.user ? serverProps.user.name : 'Action'}
+                <div className="dropdown">
+                    <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i className="bi bi-person-circle"></i> {serverProps.user ? serverProps.user.name : 'Action'}
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" style={{ cursor: 'pointer' }} onClick={handleLogout}><i class="bi bi-box-arrow-left"></i> Logout</a></li>
+                    <ul className="dropdown-menu">
+                        <li><a className="dropdown-item" style={{ cursor: 'pointer' }} onClick={handleLogout}><i className="bi bi-box-arrow-left"></i> Logout</a></li>
                     </ul>
                 </div>
             </div>
