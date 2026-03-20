@@ -7,9 +7,8 @@
 
     <title inertia>{{ config('app.name', 'SchoolManagement') }}</title>
 
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="icon" href="/images/fav.png" sizes="any">
+    <link rel="icon" href="/images/fav.png" type="image/png">
 
     @viteReactRefresh
     @vite(['resources/js/app.jsx', "resources/js/pages/{$page['component']}.jsx"])

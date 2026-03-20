@@ -1,12 +1,23 @@
 import { usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
-export default function Layout({children}) {
+export default function Layout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { props } = usePage();
-    console.log(props)
+
+    useEffect(function () {
+        if (props.flash?.success) {
+            toast.success(props.flash.success, { id: 'success-toast' });
+        }
+
+        if (props.flash?.error) {
+            toast.error(props.flash.error, { id: 'error-toast' });
+        }
+    }, [props.flash])
+
     return (
         <main className="bg-light min-vh-100">
 
@@ -28,6 +39,7 @@ export default function Layout({children}) {
 
             </div>
 
+            <Toaster position="top-right" />
         </main>
     )
 }
