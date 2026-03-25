@@ -1,10 +1,10 @@
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function Sidebar({ openedMenu,openedSubMenu, sidebarOpen, setSidebarOpen,serverProps }) {
+export default function Sidebar({ openedMenu, openedSubMenu, sidebarOpen, setSidebarOpen, serverProps }) {
 
     const [openMenu, setOpenMenu] = useState(null);
-    
+
 
     const menu = [
         {
@@ -54,7 +54,7 @@ export default function Sidebar({ openedMenu,openedSubMenu, sidebarOpen, setSide
             children: [
                 { title: "Section", link: "/sections" },
                 { title: "Subjects", link: "/classes/subjects" },
-                { title: "Class List", link: "/classes" },
+                { title: "Class List", link: "/class_list" },
                 { title: "Class Room", link: "/classes/room" },
             ],
             icon: "bi bi-easel me-2",
@@ -258,7 +258,7 @@ export default function Sidebar({ openedMenu,openedSubMenu, sidebarOpen, setSide
                                                 <li key={i} className="nav-item">
 
                                                     <Link className="nav-link text-white-50 sidebar-sub" href={sub.link}>
-                                                        <span className={`${openedSubMenu===sub.title ? 'text-primary':''}`}>
+                                                        <span className={`${openedSubMenu === sub.title ? 'text-primary' : ''}`}>
                                                             → {sub.title}
                                                         </span>
                                                     </Link>

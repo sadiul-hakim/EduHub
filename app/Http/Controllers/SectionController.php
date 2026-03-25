@@ -76,6 +76,13 @@ class SectionController extends Controller
     public function destroy(Section $section)
     {
         $this->authorize('delete', $section);
+
+        if ($section->classes()->exists()) {
+            return back()->with([
+                'error' => 'Cannot delete section. It is assigned to one or more classes.'
+            ]);
+        }
+
         $name = $section->name;
         $section->delete();
         return back()->with('success', "Successfully deleted section {$name}");

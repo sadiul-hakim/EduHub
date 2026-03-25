@@ -5,14 +5,16 @@ import DataTable from 'react-data-table-component';
 import Swal from 'sweetalert2';
 import Layout from '../component/Layout';
 
-const Section = function Section() {
+const ClassList = function ClassList() {
+
     const [mode, setMode] = useState('create');
     const [currentId, setCurrentId] = useState(null);
     const { data, setData, post, put, errors, processing, reset } = useForm({
         name: '',
-        active: null
+        active: null,
+        sections: []
     });
-    const { sections, filters } = usePage().props;
+    const { class_list, sections, filters } = usePage().props;
 
     const [search, setSearch] = useState(filters.search || '');
 
@@ -26,6 +28,11 @@ const Section = function Section() {
             name: 'Name',
             selector: row => row.name,
             sortable: true,
+        },
+        {
+            name: 'Sections',
+            cell: row => row.sections?.map(s => s.name).join(', '),
+            sortable: false,
         },
         {
             name: 'Status',
@@ -58,10 +65,9 @@ const Section = function Section() {
         }
     ];
 
-    // Debounced search
     useEffect(() => {
         const delay = setTimeout(() => {
-            router.get('/sections', { search }, {
+            router.get('/class_list', { search }, {
                 preserveState: true,
                 replace: true,
             });
@@ -73,7 +79,7 @@ const Section = function Section() {
     function handleDelete(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "This section will be deleted permanently!",
+            text: "This Class will be deleted permanently!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -81,7 +87,7 @@ const Section = function Section() {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                router.delete(`/sections/${id}`);
+                router.delete(`/class_list/${id}`);
             }
         });
     }
@@ -90,11 +96,11 @@ const Section = function Section() {
         e.preventDefault();
 
         if (mode === 'create') {
-            post('/sections', {
+            post('/class_list', {
                 onSuccess: () => handleSuccess()
             });
         } else {
-            put(`/sections/${currentId}`, {
+            put(`/class_list/${currentId}`, {
                 onSuccess: () => handleSuccess()
             });
         }
@@ -107,26 +113,27 @@ const Section = function Section() {
         closeDrawer();
     }
 
-    function handleEdit(section) {
+    function handleEdit(classList) {
         setMode('edit');
-        setCurrentId(section.id);
+        setCurrentId(classList.id);
 
         setData({
-            name: section.name,
-            active: section.active ? '1' : '0'
+            name: classList.name,
+            active: classList.active ? '1' : '0',
+            sections: classList.sections.map(s => s.id)
         });
 
         openDrawer();
     }
 
     function openDrawer() {
-        const drawer = document.getElementById('sectionDrawer');
+        const drawer = document.getElementById('classListDrawer');
         const instance = Offcanvas.getOrCreateInstance(drawer);
         instance.show();
     }
 
     function closeDrawer() {
-        const drawer = document.getElementById('sectionDrawer');
+        const drawer = document.getElementById('classListDrawer');
         const instance = Offcanvas.getOrCreateInstance(drawer);
         instance.hide();
     }
@@ -134,11 +141,11 @@ const Section = function Section() {
     return (
         <>
             <div className="card card-body">
-                <h2 className='my-2'>Section Management</h2>
+                <h2 className='my-2'>Class List Management</h2>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item"><a>Classes</a></li>
-                        <li className="breadcrumb-item active" aria-current="page">Section</li>
+                        <li className="breadcrumb-item active" aria-current="page">Class List</li>
                     </ol>
                 </nav>
             </div>
@@ -157,14 +164,14 @@ const Section = function Section() {
                                 setCurrentId(null);
                             }}
                             data-bs-toggle="offcanvas"
-                            data-bs-target="#sectionDrawer"
+                            data-bs-target="#classListDrawer"
                         >
                             Add
                         </button>
                         <div
                             className="offcanvas offcanvas-end"
                             tabIndex="-1"
-                            id="sectionDrawer"
+                            id="classListDrawer"
                         >
                             <div className="offcanvas-header">
                                 <h5 className="offcanvas-title">
@@ -180,9 +187,26 @@ const Section = function Section() {
                                         <input type="text" className="form-control" value={data.name} onChange={(e) => setData('name', e.target.value)} />
                                         {errors.name && <p className='my-2 text-danger'>{errors.name}</p>}
                                     </div><br />
+                                    <select
+                                        multiple
+                                        className="form-control"
+                                        value={data.sections}
+                                        onChange={(e) => {
+                                            const values = Array.from(e.target.selectedOptions, option =>
+                                                parseInt(option.value)
+                                            );
+                                            setData('sections', values);
+                                        }}
+                                    >
+                                        {sections.map(sec => (
+                                            <option key={sec.id} value={sec.id}>
+                                                {sec.name}
+                                            </option>
+                                        ))}
+                                    </select><br />
                                     <div className="form-group">
                                         <label htmlFor="status">Status</label>
-                                        <select className='form-control' value={data.active == 1 ? '1' : '0'}
+                                        <select className='form-control' value={data.active === true ? '1' : '0'}
                                             onChange={(e) => {
                                                 setData('active', e.target.value === '1');
                                             }}>
@@ -205,7 +229,7 @@ const Section = function Section() {
                         <input
                             type="search"
                             className="form-control mb-3"
-                            placeholder="Search sections..."
+                            placeholder="Search class list..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
@@ -215,14 +239,14 @@ const Section = function Section() {
                 {/* Table */}
                 <DataTable
                     columns={columns}
-                    data={sections.data}
+                    data={class_list.data}
                     pagination
                     paginationServer
-                    paginationTotalRows={sections.total}
-                    paginationPerPage={sections.per_page}
-                    paginationDefaultPage={sections.current_page}
+                    paginationTotalRows={class_list.total}
+                    paginationPerPage={class_list.per_page}
+                    paginationDefaultPage={class_list.current_page}
                     onChangePage={(page) => {
-                        router.get('/sections', {
+                        router.get('/class_list', {
                             page,
                             search
                         }, { preserveState: true });
@@ -235,6 +259,6 @@ const Section = function Section() {
     );
 }
 
-Section.layout = page => <Layout children={page} openedMenu={'Classes'} openedSubMenu={'Section'} />
+ClassList.layout = page => <Layout children={page} openedMenu={'Classes'} openedSubMenu={'Class List'} />
 
-export default Section;
+export default ClassList;

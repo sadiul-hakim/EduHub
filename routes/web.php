@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClassListController;
 use App\Http\Controllers\SectionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::resource('sections', SectionController::class);
+    Route::resource('class_list', ClassListController::class);
 
     Route::post("/logout", [AuthController::class, "logout"])->name("logout");
 });

@@ -7,6 +7,7 @@ import Sidebar from './Sidebar';
 export default function Layout({ children, openedMenu, openedSubMenu }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { props } = usePage();
+    console.log(props)
 
     useEffect(() => {
         if (props.flash?.success) {
