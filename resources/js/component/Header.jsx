@@ -23,14 +23,8 @@ export default function Header({ toggleSidebar, serverProps }) {
                 <h5 className="mb-0">Dashboard</h5>
             </div>
             <div>
-                <div className="dropdown">
-                    <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i className="bi bi-person-circle"></i> {serverProps.auth.user ? serverProps.auth.user.name : 'Action'}
-                    </button>
-                    <ul className="dropdown-menu">
-                        <li><a className="dropdown-item" style={{ cursor: 'pointer' }} onClick={handleLogout}><i className="bi bi-box-arrow-left"></i> Logout</a></li>
-                    </ul>
-                </div>
+                <a><i className="bi bi-person-circle text-primary"></i> {serverProps.auth.user ? serverProps.auth.user.name : 'Action'}</a>
+                <a className="ms-2 btn" style={{ cursor: 'pointer' }} onClick={handleLogout}><i class="bi bi-power text-danger"></i> Logout</a>
             </div>
 
         </header>
