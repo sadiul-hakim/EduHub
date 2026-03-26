@@ -24,7 +24,7 @@ export default function Header({ toggleSidebar, serverProps }) {
             </div>
             <div>
                 <a><i className="bi bi-person-circle text-primary"></i> {serverProps.auth.user ? serverProps.auth.user.name : 'Action'}</a>
-                <a className="ms-2 btn" style={{ cursor: 'pointer' }} onClick={handleLogout}><i class="bi bi-power text-danger"></i> Logout</a>
+                <a className="ms-2 btn" style={{ cursor: 'pointer' }} onClick={handleLogout}><i className="bi bi-power text-danger"></i> Logout</a>
             </div>
 
         </header>

@@ -53,7 +53,7 @@ export default function Sidebar({ openedMenu, openedSubMenu, sidebarOpen, setSid
             title: "Classes",
             children: [
                 { title: "Section", link: "/sections" },
-                { title: "Subjects", link: "/classes/subjects" },
+                { title: "Subjects", link: "/subjects" },
                 { title: "Class List", link: "/class_list" },
                 { title: "Class Room", link: "/class_room" },
             ],
