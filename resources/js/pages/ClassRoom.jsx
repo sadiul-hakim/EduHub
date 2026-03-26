@@ -5,16 +5,15 @@ import DataTable from 'react-data-table-component';
 import Swal from 'sweetalert2';
 import Layout from '../component/Layout';
 
-const ClassList = function ClassList() {
-
+const ClassRoom = function ClassRoom() {
     const [mode, setMode] = useState('create');
     const [currentId, setCurrentId] = useState(null);
     const { data, setData, post, put, errors, processing, reset } = useForm({
-        name: '',
-        active: null,
-        sections: []
+        number: 0,
+        capacity: 0,
+        active: null
     });
-    const { class_list, sections, filters } = usePage().props;
+    const { class_room, filters } = usePage().props;
 
     const [search, setSearch] = useState(filters.search || '');
 
@@ -25,14 +24,14 @@ const ClassList = function ClassList() {
             sortable: true,
         },
         {
-            name: 'Name',
-            selector: row => row.name,
+            name: 'Class No.',
+            selector: row => row.number,
             sortable: true,
         },
         {
-            name: 'Sections',
-            cell: row => row.sections?.map(s => s.name).join(', '),
-            sortable: false,
+            name: 'Capacity',
+            selector: row => row.capacity,
+            sortable: true,
         },
         {
             name: 'Status',
@@ -65,9 +64,10 @@ const ClassList = function ClassList() {
         }
     ];
 
+    // Debounced search
     useEffect(() => {
         const delay = setTimeout(() => {
-            router.get('/class_list', { search }, {
+            router.get('/class_room', { search }, {
                 preserveState: true,
                 replace: true,
             });
@@ -79,7 +79,7 @@ const ClassList = function ClassList() {
     function handleDelete(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "This Class will be deleted permanently!",
+            text: "This class room will be deleted permanently!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -87,7 +87,7 @@ const ClassList = function ClassList() {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                router.delete(`/class_list/${id}`);
+                router.delete(`/class_room/${id}`);
             }
         });
     }
@@ -96,11 +96,11 @@ const ClassList = function ClassList() {
         e.preventDefault();
 
         if (mode === 'create') {
-            post('/class_list', {
+            post('/class_room', {
                 onSuccess: () => handleSuccess()
             });
         } else {
-            put(`/class_list/${currentId}`, {
+            put(`/class_room/${currentId}`, {
                 onSuccess: () => handleSuccess()
             });
         }
@@ -113,39 +113,38 @@ const ClassList = function ClassList() {
         closeDrawer();
     }
 
-    function handleEdit(classList) {
+    function handleEdit(classRoom) {
         setMode('edit');
-        setCurrentId(classList.id);
+        setCurrentId(classRoom.id);
 
         setData({
-            name: classList.name,
-            active: classList.active ? '1' : '0',
-            sections: classList.sections.map(s => s.id)
+            number: classRoom.number,
+            capacity: classRoom.capacity,
+            active: classRoom.active ? '1' : '0'
         });
 
         openDrawer();
     }
 
     function openDrawer() {
-        const drawer = document.getElementById('classListDrawer');
+        const drawer = document.getElementById('classRoomDrawer');
         const instance = Offcanvas.getOrCreateInstance(drawer);
         instance.show();
     }
 
     function closeDrawer() {
-        const drawer = document.getElementById('classListDrawer');
+        const drawer = document.getElementById('classRoomDrawer');
         const instance = Offcanvas.getOrCreateInstance(drawer);
         instance.hide();
     }
-
     return (
         <>
             <div className="card card-body">
-                <h2 className='my-2'>Class List Management</h2>
+                <h2 className='my-2'>Class Room Management</h2>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item"><a>Classes</a></li>
-                        <li className="breadcrumb-item active" aria-current="page">Class List</li>
+                        <li className="breadcrumb-item active" aria-current="page">Class Room</li>
                     </ol>
                 </nav>
             </div>
@@ -164,18 +163,18 @@ const ClassList = function ClassList() {
                                 setCurrentId(null);
                             }}
                             data-bs-toggle="offcanvas"
-                            data-bs-target="#classListDrawer"
+                            data-bs-target="#classRoomDrawer"
                         >
                             Add
                         </button>
                         <div
                             className="offcanvas offcanvas-end"
                             tabIndex="-1"
-                            id="classListDrawer"
+                            id="classRoomDrawer"
                         >
                             <div className="offcanvas-header">
                                 <h5 className="offcanvas-title">
-                                    {mode === 'create' ? 'Create Class' : 'Update Class'}
+                                    {mode === 'create' ? 'Create Room' : 'Update Room'}
                                 </h5>
                                 <button type="button" className="btn-close" data-bs-dismiss="offcanvas"></button>
                             </div>
@@ -183,30 +182,18 @@ const ClassList = function ClassList() {
                             <div className="offcanvas-body">
                                 <form onSubmit={handleSubmit}>
                                     <div className="form-group">
-                                        <label htmlFor="name">Name</label>
-                                        <input type="text" className="form-control" value={data.name} onChange={(e) => setData('name', e.target.value)} />
-                                        {errors.name && <p className='my-2 text-danger'>{errors.name}</p>}
+                                        <label htmlFor="number">Room No.</label>
+                                        <input type="number" className="form-control" value={data.number} onChange={(e) => setData('number', e.target.value)} />
+                                        {errors.number && <p className='my-2 text-danger'>{errors.number}</p>}
                                     </div><br />
-                                    <select
-                                        multiple
-                                        className="form-control"
-                                        value={data.sections}
-                                        onChange={(e) => {
-                                            const values = Array.from(e.target.selectedOptions, option =>
-                                                parseInt(option.value)
-                                            );
-                                            setData('sections', values);
-                                        }}
-                                    >
-                                        {sections.map(sec => (
-                                            <option key={sec.id} value={sec.id}>
-                                                {sec.name}
-                                            </option>
-                                        ))}
-                                    </select><br />
+                                    <div className="form-group">
+                                        <label htmlFor="capacity">Capacity</label>
+                                        <input type="number" className="form-control" value={data.capacity} onChange={(e) => setData('capacity', e.target.value)} />
+                                        {errors.capacity && <p className='my-2 text-danger'>{errors.capacity}</p>}
+                                    </div><br />
                                     <div className="form-group">
                                         <label htmlFor="status">Status</label>
-                                        <select className='form-control' value={data.active === true ? '1' : '0'}
+                                        <select className='form-control' value={data.active == 1 ? '1' : '0'}
                                             onChange={(e) => {
                                                 setData('active', e.target.value === '1');
                                             }}>
@@ -229,7 +216,7 @@ const ClassList = function ClassList() {
                         <input
                             type="search"
                             className="form-control mb-3"
-                            placeholder="Search class list..."
+                            placeholder="Search room..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
@@ -239,14 +226,14 @@ const ClassList = function ClassList() {
                 {/* Table */}
                 <DataTable
                     columns={columns}
-                    data={class_list.data}
+                    data={class_room.data}
                     pagination
                     paginationServer
-                    paginationTotalRows={class_list.total}
-                    paginationPerPage={class_list.per_page}
-                    paginationDefaultPage={class_list.current_page}
+                    paginationTotalRows={class_room.total}
+                    paginationPerPage={class_room.per_page}
+                    paginationDefaultPage={class_room.current_page}
                     onChangePage={(page) => {
-                        router.get('/class_list', {
+                        router.get('/class_room', {
                             page,
                             search
                         }, { preserveState: true });
@@ -259,6 +246,6 @@ const ClassList = function ClassList() {
     );
 }
 
-ClassList.layout = page => <Layout children={page} openedMenu={'Classes'} openedSubMenu={'Class List'} />
+ClassRoom.layout = page => <Layout children={page} openedMenu={'Classes'} openedSubMenu={'Class Room'} />
 
-export default ClassList;
+export default ClassRoom;

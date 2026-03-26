@@ -55,7 +55,7 @@ export default function Sidebar({ openedMenu, openedSubMenu, sidebarOpen, setSid
                 { title: "Section", link: "/sections" },
                 { title: "Subjects", link: "/classes/subjects" },
                 { title: "Class List", link: "/class_list" },
-                { title: "Class Room", link: "/classes/room" },
+                { title: "Class Room", link: "/class_room" },
             ],
             icon: "bi bi-easel me-2",
             roles: []
