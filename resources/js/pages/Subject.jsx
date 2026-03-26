@@ -141,11 +141,11 @@ const Subject = function Subject() {
     return (
         <>
             <div className="card card-body">
-                <h2 className='my-2'>Section Management</h2>
+                <h2 className='my-2'>Subject Management</h2>
                 <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
                         <li className="breadcrumb-item"><a>Classes</a></li>
-                        <li className="breadcrumb-item active" aria-current="page">Section</li>
+                        <li className="breadcrumb-item active" aria-current="page">Subject</li>
                     </ol>
                 </nav>
             </div>
